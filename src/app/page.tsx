@@ -120,13 +120,27 @@ export default function UniversalComponentStudio() {
           <div className={styles.panelTitle}>{comp.name}</div>
         </div>
         <div className={styles.propsContent}>
-          {comp.props.map(p => (
-            <PropControl 
-              key={p.key} 
-              prop={p} 
-              value={curProps[p.key]} 
-              onChange={v => setProp(p.key, v)} 
-            />
+          {Object.entries(
+            comp.props.reduce((acc, p) => {
+              const cat = p.category || "General";
+              if (!acc[cat]) acc[cat] = [];
+              acc[cat].push(p);
+              return acc;
+            }, {} as Record<string, typeof comp.props>)
+          ).map(([cat, props]) => (
+            <div key={cat} className={styles.propCategoryGroup}>
+              <div className={styles.propCategoryTitle}>{cat}</div>
+              <div className={styles.propCategoryContent}>
+                {props.map(p => (
+                  <PropControl 
+                    key={p.key} 
+                    prop={p} 
+                    value={curProps[p.key]} 
+                    onChange={v => setProp(p.key, v)} 
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

@@ -9,6 +9,7 @@ export type PropDef = {
   label: string;
   type: PropType;
   default: any;
+  category?: string;
   options?: string[];
   min?: number;
   max?: number;

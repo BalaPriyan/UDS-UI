@@ -2,9 +2,8 @@
 
 **UDS-UI** is a premium, multi-framework component studio that allows developers and designers to visually build UI components once and export them instantly for **React**, **Vue**, **Flutter**, and **HTML/CSS**.
 
-![Screenshot](https://via.placeholder.com/1200x600/0a0a0a/ffffff?text=UDS-UI+Universal+Design+Space)
 
-## ✨ Features
+## Features
 
 - **Multi-Framework Export**: Generate production-ready code for React (TSX), Vue (SFC), Flutter (Dart), and Vanilla HTML/CSS.
 - **Responsive Previews**: Test your components across Mobile, Tablet, and Desktop viewports with realistic device frames.
