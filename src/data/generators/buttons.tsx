@@ -50,50 +50,60 @@ export const elevatedButtonDef: ComponentDef = {
     );
   },
   generators: {
-    react: (p) => `export function Button() {
-  const styles = {
-    background: "${p.disabled ? "#BDBDBD" : p.bgColor}",
-    color: "${p.disabled ? "#9E9E9E" : p.textColor}",
-    border: "${p.borderWidth > 0 ? `${p.borderWidth}px solid ${p.borderColor}` : "none"}",
-    borderRadius: "${p.borderRadius}px",
-    padding: "${p.paddingY}px ${p.paddingX}px",
-    fontSize: "${p.fontSize}px",
-    fontWeight: "${p.fontWeight}",
-    cursor: "${p.disabled ? "not-allowed" : "pointer"}",
-    width: "${p.fullWidth ? "100%" : "auto"}",
-    letterSpacing: "${p.letterSpacing}px",
-    boxShadow: "${p.disabled ? "none" : `0 ${p.elevation / 2}px ${p.elevation}px rgba(0,0,0,0.3)`}",
-    transition: "all 0.15s",
-  };
+    react: (p) => {
+      const classes = [
+        "transition-all duration-150",
+        `bg-[${p.disabled ? "#BDBDBD" : p.bgColor}]`,
+        `text-[${p.disabled ? "#9E9E9E" : p.textColor}]`,
+        `rounded-[${p.borderRadius}px]`,
+        `px-[${p.paddingX}px]`,
+        `py-[${p.paddingY}px]`,
+        `text-[${p.fontSize}px]`,
+        `font-[${p.fontWeight}]`,
+        `tracking-[${p.letterSpacing}px]`,
+        p.fullWidth ? "w-full" : "w-auto",
+        p.disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:brightness-110",
+        p.borderWidth > 0 ? `border-[${p.borderWidth}px] border-[${p.borderColor}]` : "border-none",
+        p.elevation > 0 && !p.disabled ? "shadow-lg" : "",
+      ].filter(Boolean).join(" ");
 
+      return `export function Button() {
   return (
-    <button style={styles} disabled={${p.disabled}}>
+    <button 
+      className="${classes}"
+      disabled={${p.disabled}}
+    >
       ${p.text}
     </button>
   );
-}`,
-    vue: (p) => `<template>
-  <button class="custom-btn" :disabled="${p.disabled}">
+}`;
+    },
+    vue: (p) => {
+      const classes = [
+        "transition-all duration-150",
+        `bg-[${p.disabled ? "#BDBDBD" : p.bgColor}]`,
+        `text-[${p.disabled ? "#9E9E9E" : p.textColor}]`,
+        `rounded-[${p.borderRadius}px]`,
+        `px-[${p.paddingX}px]`,
+        `py-[${p.paddingY}px]`,
+        `text-[${p.fontSize}px]`,
+        `font-[${p.fontWeight}]`,
+        `tracking-[${p.letterSpacing}px]`,
+        p.fullWidth ? "w-full" : "w-auto",
+        p.disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:brightness-110",
+        p.borderWidth > 0 ? `border-[${p.borderWidth}px] border-[${p.borderColor}]` : "border-none",
+        p.elevation > 0 && !p.disabled ? "shadow-lg" : "",
+      ].filter(Boolean).join(" ");
+
+      return `<template>
+  <button 
+    class="${classes}"
+    :disabled="${p.disabled}"
+  >
     ${p.text}
   </button>
-</template>
-
-<style scoped>
-.custom-btn {
-  background: ${p.disabled ? "#BDBDBD" : p.bgColor};
-  color: ${p.disabled ? "#9E9E9E" : p.textColor};
-  border: ${p.borderWidth > 0 ? `${p.borderWidth}px solid ${p.borderColor}` : "none"};
-  border-radius: ${p.borderRadius}px;
-  padding: ${p.paddingY}px ${p.paddingX}px;
-  font-size: ${p.fontSize}px;
-  font-weight: ${p.fontWeight};
-  cursor: ${p.disabled ? "not-allowed" : "pointer"};
-  width: ${p.fullWidth ? "100%" : "auto"};
-  letter-spacing: ${p.letterSpacing}px;
-  box-shadow: ${p.disabled ? "none" : `0 ${p.elevation / 2}px ${p.elevation}px rgba(0,0,0,0.3)`};
-  transition: all 0.15s;
-}
-</style>`,
+</template>`;
+    },
     flutter: (p) => `ElevatedButton(
   onPressed: ${p.disabled ? "null" : "() {}"},
   style: ElevatedButton.styleFrom(
@@ -116,24 +126,26 @@ export const elevatedButtonDef: ComponentDef = {
   ),
   child: const Text('${p.text}'),
 )`,
-    html: (p) => `<button class="btn" ${p.disabled ? "disabled" : ""}>${p.text}</button>
+    html: (p) => {
+      const classes = [
+        "transition-all duration-150",
+        `bg-[${p.disabled ? "#BDBDBD" : p.bgColor}]`,
+        `text-[${p.disabled ? "#9E9E9E" : p.textColor}]`,
+        `rounded-[${p.borderRadius}px]`,
+        `px-[${p.paddingX}px]`,
+        `py-[${p.paddingY}px]`,
+        `text-[${p.fontSize}px]`,
+        `font-[${p.fontWeight}]`,
+        `tracking-[${p.letterSpacing}px]`,
+        p.fullWidth ? "w-full" : "w-auto",
+        p.disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:brightness-110",
+        p.borderWidth > 0 ? `border-[${p.borderWidth}px] border-[${p.borderColor}]` : "border-none",
+        p.elevation > 0 && !p.disabled ? "shadow-lg" : "",
+      ].filter(Boolean).join(" ");
 
-<style>
-.btn {
-  background: ${p.disabled ? "#BDBDBD" : p.bgColor};
-  color: ${p.disabled ? "#9E9E9E" : p.textColor};
-  border: ${p.borderWidth > 0 ? `${p.borderWidth}px solid ${p.borderColor}` : "none"};
-  border-radius: ${p.borderRadius}px;
-  padding: ${p.paddingY}px ${p.paddingX}px;
-  font-size: ${p.fontSize}px;
-  font-weight: ${p.fontWeight};
-  cursor: ${p.disabled ? "not-allowed" : "pointer"};
-  width: ${p.fullWidth ? "100%" : "auto"};
-  letter-spacing: ${p.letterSpacing}px;
-  box-shadow: ${p.disabled ? "none" : `0 ${p.elevation / 2}px ${p.elevation}px rgba(0,0,0,0.3)`};
-  transition: all 0.15s;
-  font-family: sans-serif;
-}
-</style>`,
+      return `<button class="${classes}" ${p.disabled ? "disabled" : ""}>
+  ${p.text}
+</button>`;
+    },
   }
 };

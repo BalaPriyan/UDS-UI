@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import { REGISTRY } from "@/data/registry";
 import { PropControl } from "@/components/ui/PropControl";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { Search, Copy, Download, Code2, MonitorSmartphone, Globe, Box, Layers, Smartphone, Tablet, Monitor } from "lucide-react";
+import { Search, Copy, Download, Code2, MonitorSmartphone, Globe, Box, Layers, Smartphone, Tablet, Monitor, AlertCircle } from "lucide-react";
 import { Framework } from "@/types";
 import styles from "./page.module.css";
 
@@ -78,166 +78,178 @@ export default function UniversalComponentStudio() {
     : REGISTRY;
 
   return (
-    <div className={styles.layout}>
-      {/* Sidebar */}
-      <div className={styles.sidebar}>
-        <div className={styles.sidebarHeader}>
-          <h2 className={styles.sidebarTitle}>Components</h2>
-          <div className={styles.searchBox}>
-            <Search size={14} className={styles.searchIcon} />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              value={search} 
-              onChange={e => setSearch(e.target.value)}
-              className={styles.searchInput}
-            />
-          </div>
-        </div>
-        
-        <div className={styles.sidebarContent}>
-          {filtered.map(cat => (
-            <div key={cat.category}>
-              <div className={styles.categoryTitle}>{cat.category}</div>
-              {cat.items.map(item => (
-                <div 
-                  key={item.id}
-                  className={`${styles.navItem} ${selId === item.id ? styles.navItemActive : ''}`}
-                  onClick={() => { setSelId(item.id); setTab("preview"); }}
-                >
-                  {item.name}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+    <>
+      {/* Mobile Warning Overlay */}
+      <div className={styles.mobileWarning}>
+        <AlertCircle size={48} className={styles.warningIcon} />
+        <h1 className={styles.warningTitle}>Desktop & Tablet Only</h1>
+        <p className={styles.warningText}>
+          The Universal Design Space is a professional prototyping tool optimized for larger screens. 
+          Please open this site on a desktop or tablet for the best experience.
+        </p>
       </div>
 
-      {/* Properties Panel */}
-      <div className={styles.propsPanel}>
-        <div className={styles.panelHeader}>
-          <div className={styles.panelSubtitle}>Configuration</div>
-          <div className={styles.panelTitle}>{comp.name}</div>
-        </div>
-        <div className={styles.propsContent}>
-          {Object.entries(
-            comp.props.reduce((acc, p) => {
-              const cat = p.category || "General";
-              if (!acc[cat]) acc[cat] = [];
-              acc[cat].push(p);
-              return acc;
-            }, {} as Record<string, typeof comp.props>)
-          ).map(([cat, props]) => (
-            <div key={cat} className={styles.propCategoryGroup}>
-              <div className={styles.propCategoryTitle}>{cat}</div>
-              <div className={styles.propCategoryContent}>
-                {props.map(p => (
-                  <PropControl 
-                    key={p.key} 
-                    prop={p} 
-                    value={curProps[p.key]} 
-                    onChange={v => setProp(p.key, v)} 
-                  />
+      <div className={styles.layout}>
+        {/* Sidebar */}
+        <div className={styles.sidebar}>
+          <div className={styles.sidebarHeader}>
+            <h2 className={styles.sidebarTitle}>Components</h2>
+            <div className={styles.searchBox}>
+              <Search size={14} className={styles.searchIcon} />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                value={search} 
+                onChange={e => setSearch(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+          </div>
+          
+          <div className={styles.sidebarContent}>
+            {filtered.map(cat => (
+              <div key={cat.category}>
+                <div className={styles.categoryTitle}>{cat.category}</div>
+                {cat.items.map(item => (
+                  <div 
+                    key={item.id}
+                    className={`${styles.navItem} ${selId === item.id ? styles.navItemActive : ''}`}
+                    onClick={() => { setSelId(item.id); setTab("preview"); }}
+                  >
+                    {item.name}
+                  </div>
                 ))}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Main Viewport */}
-      <div className={styles.mainPanel}>
-        <div className={styles.tabsHeader}>
-          <div className={styles.tabsList}>
-            <button 
-              className={`${styles.tabButton} ${tab === "preview" ? styles.tabActive : ''}`}
-              onClick={() => setTab("preview")}
-            >
-              <MonitorSmartphone size={14} /> Preview
-            </button>
-            <button 
-              className={`${styles.tabButton} ${tab === "code" ? styles.tabActive : ''}`}
-              onClick={() => setTab("code")}
-            >
-              <Code2 size={14} /> Code
-            </button>
+        {/* Properties Panel */}
+        <div className={styles.propsPanel}>
+          <div className={styles.panelHeader}>
+            <div className={styles.panelSubtitle}>Configuration</div>
+            <div className={styles.panelTitle}>{comp.name}</div>
+          </div>
+          <div className={styles.propsContent}>
+            {Object.entries(
+              comp.props.reduce((acc, p) => {
+                const cat = p.category || "General";
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(p);
+                return acc;
+              }, {} as Record<string, typeof comp.props>)
+            ).map(([cat, props]) => (
+              <div key={cat} className={styles.propCategoryGroup}>
+                <div className={styles.propCategoryTitle}>{cat}</div>
+                <div className={styles.propCategoryContent}>
+                  {props.map(p => (
+                    <PropControl 
+                      key={p.key} 
+                      prop={p} 
+                      value={curProps[p.key]} 
+                      onChange={v => setProp(p.key, v)} 
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Viewport */}
+        <div className={styles.mainPanel}>
+          <div className={styles.tabsHeader}>
+            <div className={styles.tabsList}>
+              <button 
+                className={`${styles.tabButton} ${tab === "preview" ? styles.tabActive : ''}`}
+                onClick={() => setTab("preview")}
+              >
+                <MonitorSmartphone size={14} /> Preview
+              </button>
+              <button 
+                className={`${styles.tabButton} ${tab === "code" ? styles.tabActive : ''}`}
+                onClick={() => setTab("code")}
+              >
+                <Code2 size={14} /> Code
+              </button>
+            </div>
+
+            {tab === "preview" && (
+              <div className={styles.frameworkSelector}>
+                {VIEWPORTS.map(vp => (
+                  <button
+                    key={vp.id}
+                    className={`${styles.fwButton} ${viewport === vp.id ? styles.fwActive : ''}`}
+                    onClick={() => setViewport(vp.id)}
+                    title={vp.label}
+                  >
+                    {vp.icon}
+                    <span>{vp.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {tab === "code" && (
+              <div className={styles.frameworkSelector}>
+                {FRAMEWORKS.map(fw => (
+                  <button
+                    key={fw.id}
+                    className={`${styles.fwButton} ${framework === fw.id ? styles.fwActive : ''}`}
+                    onClick={() => setFramework(fw.id)}
+                    title={fw.label}
+                  >
+                    {fw.icon}
+                    <span>{fw.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            <div className={styles.actionsList}>
+              {tab === "code" && (
+                <>
+                  <button className={styles.actionButton} onClick={copy}>
+                    <Copy size={14} /> {copied ? "Copied!" : "Copy"}
+                  </button>
+                  <button className={`${styles.actionButton} ${styles.actionPrimary}`} onClick={download}>
+                    <Download size={14} /> .{framework === 'flutter' ? 'dart' : framework === 'react' ? 'tsx' : framework === 'vue' ? 'vue' : 'html'}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
-          {tab === "preview" && (
-            <div className={styles.frameworkSelector}>
-              {VIEWPORTS.map(vp => (
-                <button
-                  key={vp.id}
-                  className={`${styles.fwButton} ${viewport === vp.id ? styles.fwActive : ''}`}
-                  onClick={() => setViewport(vp.id)}
-                  title={vp.label}
-                >
-                  {vp.icon}
-                  <span>{vp.label}</span>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {tab === "code" && (
-            <div className={styles.frameworkSelector}>
-              {FRAMEWORKS.map(fw => (
-                <button
-                  key={fw.id}
-                  className={`${styles.fwButton} ${framework === fw.id ? styles.fwActive : ''}`}
-                  onClick={() => setFramework(fw.id)}
-                  title={fw.label}
-                >
-                  {fw.icon}
-                  <span>{fw.label}</span>
-                </button>
-              ))}
-            </div>
-          )}
-          
-          <div className={styles.actionsList}>
-            {tab === "code" && (
-              <>
-                <button className={styles.actionButton} onClick={copy}>
-                  <Copy size={14} /> {copied ? "Copied!" : "Copy"}
-                </button>
-                <button className={`${styles.actionButton} ${styles.actionPrimary}`} onClick={download}>
-                  <Download size={14} /> .{framework === 'flutter' ? 'dart' : framework === 'react' ? 'tsx' : framework === 'vue' ? 'vue' : 'html'}
-                </button>
-              </>
+          <div className={styles.panelBody}>
+            {tab === "preview" ? (
+              <div className={styles.previewContainer}>
+                <div className={`${styles.deviceFrame} ${styles[viewport]}`}>
+                  {viewport === "mobile" && (
+                    <div className={styles.deviceHeader}>
+                      <span>9:41</span>
+                      <div className={styles.notch} />
+                      <span></span>
+                    </div>
+                  )}
+                  {viewport !== "desktop" && (
+                    <div className={styles.appBar}>
+                      <span className={styles.backIcon}>←</span>
+                      <span className={styles.appTitle}>{comp.name}</span>
+                    </div>
+                  )}
+                  <div className={styles.deviceContent}>
+                    {comp.preview(curProps)}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.codeContainer}>
+                <CodeBlock code={code} language={framework} />
+              </div>
             )}
           </div>
         </div>
-
-        <div className={styles.panelBody}>
-          {tab === "preview" ? (
-            <div className={styles.previewContainer}>
-              <div className={`${styles.deviceFrame} ${styles[viewport]}`}>
-                {viewport === "mobile" && (
-                  <div className={styles.deviceHeader}>
-                    <span>9:41</span>
-                    <div className={styles.notch} />
-                    <span></span>
-                  </div>
-                )}
-                {viewport !== "desktop" && (
-                  <div className={styles.appBar}>
-                    <span className={styles.backIcon}>←</span>
-                    <span className={styles.appTitle}>{comp.name}</span>
-                  </div>
-                )}
-                <div className={styles.deviceContent}>
-                  {comp.preview(curProps)}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className={styles.codeContainer}>
-              <CodeBlock code={code} language={framework} />
-            </div>
-          )}
-        </div>
       </div>
-    </div>
+    </>
   );
 }
