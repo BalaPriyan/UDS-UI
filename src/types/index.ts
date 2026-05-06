@@ -14,6 +14,7 @@ export type PropDef = {
   min?: number;
   max?: number;
   step?: number;
+  enabledIf?: (props: any) => boolean;
 };
 
 export type CodeGenerators = {

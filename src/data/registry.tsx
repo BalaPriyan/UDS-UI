@@ -1,12 +1,11 @@
 import { CategoryDef } from "@/types";
-import { elevatedButtonDef } from "./generators/buttons";
+import { buttonDef } from "./generators/buttons";
 
 export const REGISTRY: CategoryDef[] = [
   {
-    category: "Buttons",
+    category: "Elements",
     items: [
-      elevatedButtonDef,
-      // We can easily add outinedButtonDef, textButtonDef, etc. here in the future
+      buttonDef,
     ],
   },
 ];

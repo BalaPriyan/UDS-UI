@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import { REGISTRY } from "@/data/registry";
 import { PropControl } from "@/components/ui/PropControl";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { Search, Copy, Download, Code2, MonitorSmartphone, Globe, Box, Layers, Smartphone, Tablet, Monitor, AlertCircle } from "lucide-react";
+import { Search, Copy, Download, Code2, MonitorSmartphone, Globe, Box, Layers, Smartphone, Tablet, Monitor, AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { Framework } from "@/types";
 import styles from "./page.module.css";
 
@@ -24,13 +24,15 @@ const VIEWPORTS: { id: ViewportSize; label: string; icon: React.ReactNode }[] = 
 ];
 
 export default function UniversalComponentStudio() {
-  const [selId, setSelId] = useState("elevated_button");
+  const [selId, setSelId] = useState("button");
   const [vals, setVals] = useState<Record<string, any>>({});
   const [tab, setTab] = useState<"preview" | "code">("preview");
   const [viewport, setViewport] = useState<ViewportSize>("mobile");
   const [framework, setFramework] = useState<Framework>("react");
   const [copied, setCopied] = useState(false);
   const [search, setSearch] = useState("");
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [previewBg, setPreviewBg] = useState("#f5f5f7");
 
   const allItems = useMemo(() => REGISTRY.flatMap(c => c.items), []);
   const comp = useMemo(() => allItems.find(c => c.id === selId) || allItems[0], [selId, allItems]);
@@ -76,6 +78,8 @@ export default function UniversalComponentStudio() {
         items: c.items.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
       })).filter(c => c.items.length > 0)
     : REGISTRY;
+
+  const toggleCat = (cat: string) => setCollapsed(prev => ({ ...prev, [cat]: !prev[cat] }));
 
   return (
     <>
@@ -138,21 +142,30 @@ export default function UniversalComponentStudio() {
                 acc[cat].push(p);
                 return acc;
               }, {} as Record<string, typeof comp.props>)
-            ).map(([cat, props]) => (
-              <div key={cat} className={styles.propCategoryGroup}>
-                <div className={styles.propCategoryTitle}>{cat}</div>
-                <div className={styles.propCategoryContent}>
-                  {props.map(p => (
-                    <PropControl 
-                      key={p.key} 
-                      prop={p} 
-                      value={curProps[p.key]} 
-                      onChange={v => setProp(p.key, v)} 
-                    />
-                  ))}
+            ).map(([cat, props]) => {
+              const isCollapsed = collapsed[cat];
+              return (
+                <div key={cat} className={styles.propCategoryGroup}>
+                  <div className={styles.propCategoryTitle} onClick={() => toggleCat(cat)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>{cat}</span>
+                    {isCollapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+                  </div>
+                  {!isCollapsed && (
+                    <div className={styles.propCategoryContent}>
+                      {props.map(p => (
+                        <PropControl 
+                          key={p.key} 
+                          prop={p} 
+                          value={curProps[p.key]} 
+                          onChange={v => setProp(p.key, v)} 
+                          disabled={p.enabledIf ? !p.enabledIf(curProps) : false}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -176,6 +189,15 @@ export default function UniversalComponentStudio() {
 
             {tab === "preview" && (
               <div className={styles.frameworkSelector}>
+                <div className={styles.previewBgTool}>
+                  <input 
+                    type="color" 
+                    value={previewBg} 
+                    onChange={e => setPreviewBg(e.target.value)} 
+                    className={styles.miniColorPicker}
+                    title="Change Preview Background"
+                  />
+                </div>
                 {VIEWPORTS.map(vp => (
                   <button
                     key={vp.id}
@@ -237,7 +259,7 @@ export default function UniversalComponentStudio() {
                       <span className={styles.appTitle}>{comp.name}</span>
                     </div>
                   )}
-                  <div className={styles.deviceContent}>
+                  <div className={styles.deviceContent} style={{ background: previewBg }}>
                     {comp.preview(curProps)}
                   </div>
                 </div>

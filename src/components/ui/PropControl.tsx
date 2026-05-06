@@ -2,10 +2,21 @@ import React from "react";
 import styles from "@/app/page.module.css";
 import { PropDef } from "@/types";
 
-export function PropControl({ prop, value, onChange }: { prop: PropDef; value: any; onChange: (v: any) => void }) {
-  const lb = <div className={styles.propLabel}>{prop.label}</div>;
+export function PropControl({ prop, value, onChange, disabled }: { prop: PropDef; value: any; onChange: (v: any) => void, disabled?: boolean }) {
+  const lb = <div className={`${styles.propLabel} ${disabled ? styles.disabledText : ""}`}>{prop.label}</div>;
   let ctrl;
   
+  if (disabled) {
+    return (
+      <div className={styles.propGroup} title={`Enable ${prop.category} Layer to adjust this`}>
+        {lb}
+        <div className={styles.disabledControl}>
+          Locked (Turn on Layer)
+        </div>
+      </div>
+    );
+  }
+
   if (prop.type === "text") {
     ctrl = <input type="text" value={value} onChange={e => onChange(e.target.value)} className={styles.input} />;
   } else if (prop.type === "textarea") {
@@ -27,11 +38,16 @@ export function PropControl({ prop, value, onChange }: { prop: PropDef; value: a
   } else if (prop.type === "number") {
     ctrl = <input type="number" value={value} onChange={e => onChange(parseFloat(e.target.value))} className={styles.input} />;
   } else if (prop.type === "bool") {
-    ctrl = (
-      <label className={styles.boolControl}>
-        <input type="checkbox" checked={value} onChange={e => onChange(e.target.checked)} className={styles.checkbox} />
-        <span className={styles.boolLabel}>{value ? "true" : "false"}</span>
-      </label>
+    return (
+      <div className={styles.propGroup}>
+        <div className={styles.boolControl}>
+          <span className={styles.boolLabel}>{prop.label}</span>
+          <label className={styles.switch}>
+            <input type="checkbox" checked={value} onChange={e => onChange(e.target.checked)} />
+            <span className={styles.slider}></span>
+          </label>
+        </div>
+      </div>
     );
   } else if (prop.type === "select") {
     ctrl = (
